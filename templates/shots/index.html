@@ -1,0 +1,90 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+	<meta charset="utf-8">
+    <title>shots</title>
+
+    <!-- Bootstrap CSS & JQuery -->
+	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <!-- Custom CSS -->
+	<style>
+        body { 
+            background-color: #131d24;
+            color: white;
+            font-family: Open Sans;
+            font-style: normal;
+            font-variant: normal;
+            font-weight: 500;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
+        }
+
+        .container { padding-top: 12px; }
+
+        .loading { display: none; }
+        .popup-image {
+          display: none;
+          z-index: 11;
+
+          margin: 0 auto;
+          width: 90%;
+          border-left: 1px solid #CDCFD1;
+          border-right: 1px solid #CDCFD1;
+          border-bottom: 1px solid #CDCFD1;
+          background-color: #FFFFFF;
+          padding: 10px;
+        }
+
+        .popup-image img {
+          max-width:100%;
+          max-height:100%;
+        }
+
+        .thumbnail img { width: 172px; height: 86px; }
+        .thumbnail { background-color: #CDCFD1; }
+    </style>
+
+    <script>
+        $(document).ready(function(){
+            $(".image-click").click(function(){
+                $(".loading").show();
+                var image = $(this).attr('alt');
+                image = image.split("-");
+                image = "" + image[0] + "-" + image[1] + ".png";
+
+                $(".popup-image").slideToggle();
+                $(".popup-image").append("<p style='color: black;'>" + image + "</p>");
+                $('<img src="/media/screens/'+ image +'">').load(function() {
+                    $(this).appendTo(".close-popup");
+                    $(".loading").hide();
+                });
+              });
+
+              $(".close-popup").click(function() {
+                $(".popup-image").slideToggle();
+                $(".close-popup").contents().remove();
+                $(".popup-image p").remove();
+            });
+        });
+    </script>
+
+</head>
+<body>
+    <div class="popup-image"><img src="{% static 'img/loading.gif' %}" class="loading"><div class='close-popup'></div></div>
+    <div class="container">
+        <div class="row">
+    	{% if images %}
+            {% for image in images %}
+                <div class='col-sm-2 col-md-2'><div class='thumbnail'>
+                        <img class='img-rounded image-click' src="/media/screens/thumbs/{{ image }}" alt='{{ image }}'>
+    	        </div></div>
+            {% endfor %}
+        {% else %}
+            <p><h2><center>No images</center></h2></p>
+        {% endif %}
+	    </div>
+    </div>
+</body>
+</html>
